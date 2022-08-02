@@ -14,4 +14,62 @@ contract MultisigWallet {
     // 実行済みのフラグ
     bool executed;
   }
+
+  // マルチシグウォレットの名前とそれを返すメソッド
+  string public walletName;
+
+  function getName() public view returns (string memory) {
+    return walletName;
+  }
+
+  //Ownerアドレスを格納する配列とOwner数を返すメソッド
+  address[] public owners;
+
+  function getOwnersCount() public view returns(uint){
+    return owners.length;
+  }
+
+  // ウォレットの閾値をいれる変数とそれを返すメソッド
+  uint public required;
+
+  function getRequired() public view returns(uint){
+    return required;
+  }
+
+  //Transactionを入れる配列と、それを返すメソッド
+  Transaction[] public transactions;
+
+  function getTxs() public view returns(Transaction[] memory){
+    return transactions;
+  }
+
+
+  // addressがowner権限を持っていたらTrueとするマッピング
+  mapping(address => bool) public isOwner;
+
+  // TransactionIDごとにOwner権限を管理するマッピング
+  mapping(uint => mapping(address => bool)) public approved;
+
+  // 各種イベント
+  event Deposit(address indexed sender, uint amount);
+  event Submit(uint indexed txId);
+  event Approved(address indexed owner, uint indexed txId);
+  event Revoke(address indexed owner, uint indexed txId);
+  event Execute(uint indexed txId);
+
+  // 各種modifier
+  modifier onlyOwner() {
+    require(isOwner[msg.sender], "sender must be owner");
+    _;
+  }
+
+  modifier txExists(uint _txId) {
+    require(_txId < transactions.length, "tx does not exist");
+    _;
+  }
+
+  modifier notApproved(uint _txId) {
+    require(!approved[_txId][msg.sender], "tx already approved");
+    _;
+  }
 }
