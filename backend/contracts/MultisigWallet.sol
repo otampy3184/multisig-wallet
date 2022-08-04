@@ -77,4 +77,23 @@ contract MultisigWallet {
     require(!transactions[_txId].executed, "this tx is already exexuted");
     _;
   }
+
+
+  /**
+   * トランザクション提出用のメソッド
+   * 提出するTransactionをTransactions[]の配列にPushし、ExecutedをFalseにする
+   * @param _to 送金先のアドレス
+   * @param _value　送金額
+   * @param _data　バイトデータ
+   */
+  function submit(address _to, uint _value, bytes calldata _data) external onlyOwner{
+    transactions.push(Transaction({
+      to: _to,
+      value: _value,
+      data: _data,
+      executed: false
+    }));
+    // 提出イベントを発行
+    emit Submit(transactions.length - 1);
+  }
 }
