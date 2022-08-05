@@ -96,4 +96,16 @@ contract MultisigWallet {
     // 提出イベントを発行
     emit Submit(transactions.length - 1);
   }
+
+  /**
+   * 指定したIDのトランザクションを承認するメソッド
+   * @param _txId 指定のトランザクションID
+   */
+  function approve(uint _txId)external onlyOwner txExists(_txId) notApproved(_txId) notExecuted(_txId) {
+    // 指定のtxについて、approvedのマッピングをtrueにする
+    approved[_txId][msg.sender] = true;
+
+    // 承認イベントを発行
+    emit Approved(msg.sender, _txId);
+  }
 }
