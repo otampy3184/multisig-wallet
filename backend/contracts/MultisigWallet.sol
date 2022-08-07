@@ -108,4 +108,34 @@ contract MultisigWallet {
     // 承認イベントを発行
     emit Approved(msg.sender, _txId);
   }
-}
+
+  /**
+   * 指定IDのトランザクションの承認数を取得する
+   * @param _txId 承認数を取得したいTxのID
+   */
+   function _getApprovalCount(uint _txId) public view returns(uint count) {
+    for (uint i; i < owners.length; i++) {
+      if(approved[_txId][owners[i]] ){
+        count += 1;
+      }
+    }
+   }
+
+   /**
+    * トランザクションをチェーンにブロードキャストするメソッド
+    * @param _txId ブロードキャスト対象のTxのID
+    */
+    function execute(uint _txId) payable external txExists(_txId) notExecuted(_txId) {
+      Transaction storage transaction = transactions[_txId];
+      transaction.executed = true;
+
+      // トランザクションの実行を行う。成功したらsuccessのBoolが返ってくる
+      (bool success, ) = payable(transaction.to).call{value: transaction.value}(
+        transaction.data
+      );
+      // トランザクションの成功を判別
+      require(success, "tx failed");
+      // イベントの発行
+      emit Execute(_txId);
+    }
+  }
