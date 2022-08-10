@@ -158,13 +158,5 @@ contract MultisigWallet {
       emit Deposit(msg.sender, msg.value);
     }
 
-    function submit(address _to, uint _value, bytes calldata _data) external onlyOwner { 
-      transactions.push(Transaction({
-        to: _to,
-        value: _value,
-        data: _data,
-        executed: false
-      }));
-      emit Submit(transactions.length - 1); 
-    }
+    
   }
