@@ -138,4 +138,18 @@ contract MultisigWallet {
       // イベントの発行
       emit Execute(_txId);
     }
+
+    constructor(string memory _name, address[] memory _owners, uint _required) {
+      require(_owners.length > 0, "");
+      require(_required > 0, "");
+
+      for(uint i; i < _owners.length; i++){ 
+        address owner = _owners[i];
+        require(owner != address(0), "");
+        require(!isOwner[owner], "");
+
+        isOwner[owner] = true;
+        required = _required;
+      }
+    }
   }
