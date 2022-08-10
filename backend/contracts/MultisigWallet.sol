@@ -149,7 +149,9 @@ contract MultisigWallet {
         require(!isOwner[owner], "");
 
         isOwner[owner] = true;
-        required = _required;
+        owners.push(owner);
       }
+      required = _required;
+      walletName = _name;
     }
   }
