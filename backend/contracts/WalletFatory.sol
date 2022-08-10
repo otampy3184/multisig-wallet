@@ -11,6 +11,10 @@ contract WalletFactory {
     // Walletインスタンス生成用のイベント
     event WalletCreated (MultisigWallet indexed wallet, string name, address[] owners, uint required);
 
+    function walletsCount() public view returns (uint256) {
+        return wallets.length;
+    }
+
     // MultisigWalletのインスタンス生成メソッド
     function createWallet (
         string memory _name,
@@ -19,4 +23,10 @@ contract WalletFactory {
     ) public {
         //MultisigWallet wallet = new MultisigWallet(_name, _owners, _required);
     }
+
+    function getWallets(uint limit, uint256 offset) public view returns (MultisigWallet) {
+        //sakuseityu
+    }
+
+
 }
