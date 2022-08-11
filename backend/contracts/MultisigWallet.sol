@@ -138,4 +138,29 @@ contract MultisigWallet {
       // イベントの発行
       emit Execute(_txId);
     }
+
+    constructor(string memory _name, address[] memory _owners, uint _required) {
+      require(_owners.length > 0, "");
+      require(_required > 0, "");
+
+      for(uint i; i < _owners.length; i++){ 
+        address owner = _owners[i];
+        require(owner != address(0), "");
+        require(!isOwner[owner], "");
+
+        isOwner[owner] = true;
+        owners.push(owner);
+      }
+      required = _required;
+      walletName = _name;
+    }
+    receive() external payable{
+      emit Deposit(msg.sender, msg.value);
+    }
+
+    function revoke(uint _txId) external onlyOwner txExists(_txId) notExecuted(_txId){
+      require(approved[_txId][msg.sender] = true);
+      approved[_txId][msg.sender] = false;
+      emit Revoke(msg.sender, _txId);
+    }
   }
