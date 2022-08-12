@@ -21,7 +21,9 @@ contract WalletFactory {
         address[] memory _owners,
         uint _required
     ) public {
-        //MultisigWallet wallet = new MultisigWallet(_name, _owners, _required);
+        MultisigWallet wallet = new MultisigWallet(_name, _owners, _required);
+        wallets.push(wallet);
+        emit WalletCreated(wallet, _name, _owners, _required);
     }
 
     function getWallets(uint limit, uint256 offset) public view returns (MultisigWallet) {
